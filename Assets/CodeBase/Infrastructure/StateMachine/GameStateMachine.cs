@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using CodeBase.Common;
 using CodeBase.Infrastructure.AssetManagement;
+using CodeBase.Infrastructure.Fabric;
 using CodeBase.Infrastructure.StateMachine.States;
 using CodeBase.Services;
 using CodeBase.Services.SceneManagement;
@@ -21,7 +22,7 @@ namespace CodeBase.Infrastructure.StateMachine
                     new BootstrapState(this, sceneLoader, services),
 
                 [typeof(LoadLevelState)] = 
-                    new LoadLevelState(this, sceneLoader, curtain),
+                    new LoadLevelState(this, sceneLoader, curtain, services.Single<IGameFactory>()),
                 
                 [typeof(GameLoopState)] = 
                     new GameLoopState()

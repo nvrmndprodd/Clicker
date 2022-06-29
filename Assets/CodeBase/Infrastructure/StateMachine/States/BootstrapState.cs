@@ -49,10 +49,6 @@ namespace CodeBase.Infrastructure.StateMachine.States
                     _services.Single<IStaticDataService>(), 
                     _services.Single<IAssetProvider>())
                 );
-
-            var spawnService = new GameObject("SpawnService").AddComponent<SpawnService>();
-            spawnService.Construct(_services.Single<IGameFactory>());
-            _services.RegisterSingle(spawnService);
         }
 
         private void RegisterStaticDataService()

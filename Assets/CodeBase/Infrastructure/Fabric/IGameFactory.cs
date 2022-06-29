@@ -7,7 +7,7 @@ namespace CodeBase.Infrastructure.Fabric
 {
     public interface IGameFactory : IService
     {
-        Task<GameObject> CreateEnemy(EnemyType enemyType, Vector3 at);
+        Task<GameObject> CreateEnemy(EnemyType enemyType, Vector3 at, float multiplier);
         GameObject CreateBooster();
     }
 }

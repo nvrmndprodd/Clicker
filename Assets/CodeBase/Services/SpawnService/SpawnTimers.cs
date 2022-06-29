@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace CodeBase.Services.SpawnService
@@ -10,23 +11,23 @@ namespace CodeBase.Services.SpawnService
         #region CONST
 
         private const int EnemySpawnLowerBound = 2;
-        private const int EnemySpawnUpperBound = 6;
+        private const int EnemySpawnUpperBound = 7;
         
         private const int FreezeSpawnLowerBound = 10;
-        private const int FreezeSpawnUpperBound = 25;
+        private const int FreezeSpawnUpperBound = 26;
         
         private const int BombSpawnLowerBound = 30;
-        private const int BombSpawnUpperBound = 60;
+        private const int BombSpawnUpperBound = 61;
         
         private const int DoubleSpawnLowerBound = 20;
-        private const int DoubleSpawnUpperBound = 35;
+        private const int DoubleSpawnUpperBound = 36;
 
         private readonly Dictionary<int, float> SpeedTimers = new Dictionary<int, float>()
         {
-            {20, 1.2f}, 
-            {30, 1.5f}, 
-            {45, 2f}, 
-            {60, 3f}
+            {20, 2f}, 
+            {30, 3f}, 
+            {45, 5f}, 
+            {60, 10f}
         };
 
         #endregion
@@ -140,6 +141,8 @@ namespace CodeBase.Services.SpawnService
         private void UpdateSpeedTimer(float deltaTime)
         {
             _speedCurrent += deltaTime / _spawnService.Speed;
+            
+            Debug.Log(_speedCurrent);
 
             if (_speedCurrent < _speedTimer) return;
             

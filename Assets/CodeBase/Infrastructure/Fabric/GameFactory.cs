@@ -17,7 +17,7 @@ namespace CodeBase.Infrastructure.Fabric
             _assets = assets;
         }
 
-        public async Task<GameObject> CreateEnemy(EnemyType enemyType, Vector3 at)
+        public async Task<GameObject> CreateEnemy(EnemyType enemyType, Vector3 at, float multiplier)
         {
             var enemyData = _staticData.ForEnemy(enemyType);
 
@@ -25,8 +25,8 @@ namespace CodeBase.Infrastructure.Fabric
             var enemyObject = Object.Instantiate(enemyPrefab, at, Quaternion.identity);
 
             var enemyHealth = enemyObject.GetComponent<EnemyHealth>();
-            enemyHealth.Max = enemyData.Hp;
-            enemyHealth.Current = enemyData.Hp;
+            enemyHealth.Max = enemyData.Hp * multiplier;
+            enemyHealth.Current = enemyData.Hp * multiplier;
 
             return enemyObject;
         }

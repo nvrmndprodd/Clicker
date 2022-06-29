@@ -64,11 +64,10 @@ namespace CodeBase.Services.SpawnService
 
         private async void SpawnEnemy()
         {
-            //var enemyType = (EnemyType) Random.Range(0, 2);
-            var enemyType = EnemyType.Staying;
+            var enemyType = (EnemyType) Random.Range(0, 3);
             
             var spawnPoint = FindFreePoint();
-            var enemy = await _factory.CreateEnemy(enemyType, spawnPoint.transform.position);
+            var enemy = await _factory.CreateEnemy(enemyType, spawnPoint.transform.position, Speed);
             
              spawnPoint.Unit = enemy;
              spawnPoint.IsFree = false;
@@ -96,10 +95,10 @@ namespace CodeBase.Services.SpawnService
 
         private SpawnPoint FindFreePoint()
         {
-            var (i, j) = (Random.Range(0, 7), Random.Range(0, 7));
+            var (i, j) = (Random.Range(0, 8), Random.Range(0, 8));
             while (!_spawnPoints[i, j].IsFree)
             {
-                (i, j) = (Random.Range(0, 7), Random.Range(0, 7));
+                (i, j) = (Random.Range(0, 8), Random.Range(0, 8));
             }
 
             var spawnPoint = _spawnPoints[i, j];
