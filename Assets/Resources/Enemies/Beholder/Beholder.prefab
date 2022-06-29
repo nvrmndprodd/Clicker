@@ -1391,7 +1391,7 @@ GameObject:
   - component: {fileID: 6007542933565031585}
   - component: {fileID: 8883263844412440392}
   m_Layer: 6
-  m_Name: BeholderPolyart
+  m_Name: Beholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

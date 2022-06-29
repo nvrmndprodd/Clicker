@@ -32,17 +32,9 @@ namespace CodeBase.Infrastructure.StateMachine.States
         public void Exit() => 
             _loadingCurtain.Hide();
 
-        private async void OnLoaded()
+        private void OnLoaded()
         {
-            await CreateGameWorld();
-            
             _gameStateMachine.Enter<GameLoopState>();
-        }
-
-        private async Task CreateGameWorld()
-        {
-            //await _heroFactory.CreateHero(levelData.InitialHeroPosition);
-            //await _heroFactory.CreateHud();
         }
     }
 }

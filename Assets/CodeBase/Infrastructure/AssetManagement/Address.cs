@@ -4,8 +4,8 @@ namespace CodeBase.Infrastructure.AssetManagement
 {
     public static class Address
     {
-        public const string HudPath = "Hud";
-        public const string HeroPath = "Hero";
-        public const string EnemySpawnPoint = "EnemySpawnPoint";
+        public const string Staying = "Staying";
+        public const string Walking = "Walking";
+        public const string Teleporting = "Teleporting";
     }
 }

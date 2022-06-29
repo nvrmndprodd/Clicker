@@ -1,6 +1,10 @@
 using CodeBase.Infrastructure.AssetManagement;
+using CodeBase.Infrastructure.Fabric;
 using CodeBase.Services;
 using CodeBase.Services.SceneManagement;
+using CodeBase.Services.SpawnService;
+using CodeBase.Services.StaticData;
+using UnityEngine;
 
 namespace CodeBase.Infrastructure.StateMachine.States
 {
@@ -35,11 +39,34 @@ namespace CodeBase.Infrastructure.StateMachine.States
 
         private void RegisterServices()
         {
+            RegisterAssetProvider();
+            RegisterStaticDataService();
+
+            _services.RegisterSingle<IGameStateMachine>(_stateMachine);
+            
+            _services.RegisterSingle<IGameFactory>(new GameFactory
+                (
+                    _services.Single<IStaticDataService>(), 
+                    _services.Single<IAssetProvider>())
+                );
+
+            var spawnService = new GameObject("SpawnService").AddComponent<SpawnService>();
+            spawnService.Construct(_services.Single<IGameFactory>());
+            _services.RegisterSingle(spawnService);
+        }
+
+        private void RegisterStaticDataService()
+        {
+            var staticDataService = new StaticDataService();
+            staticDataService.Load();
+            _services.RegisterSingle<IStaticDataService>(staticDataService);
+        }
+
+        private void RegisterAssetProvider()
+        {
             var assetProvider = new AssetProvider();
             _services.RegisterSingle<IAssetProvider>(assetProvider);
             assetProvider.Initialize();
-            
-            _services.RegisterSingle<IGameStateMachine>(_stateMachine);
         }
     }
 }

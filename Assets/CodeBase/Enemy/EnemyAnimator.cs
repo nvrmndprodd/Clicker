@@ -16,12 +16,8 @@ namespace CodeBase.Enemy
         private void Awake() => 
             _animator = GetComponent<Animator>();
 
-        public void PlayHit()
-        {
-            Debug.Log("Trigger is going to be set");
+        public void PlayHit() => 
             _animator.SetTrigger(Hit);
-            Debug.Log("Trigger is set");
-        }
 
         public void PlayDeath() =>
             _animator.SetTrigger(Die);
