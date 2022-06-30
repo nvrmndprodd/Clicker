@@ -5,6 +5,9 @@ using CodeBase.Infrastructure.AssetManagement;
 using CodeBase.Infrastructure.Fabric;
 using CodeBase.Infrastructure.StateMachine.States;
 using CodeBase.Services;
+using CodeBase.Services.LevelServices.BoosterService;
+using CodeBase.Services.LevelServices.EnemyService;
+using CodeBase.Services.LevelServices.SpeedService;
 using CodeBase.Services.SceneManagement;
 
 namespace CodeBase.Infrastructure.StateMachine
@@ -22,7 +25,15 @@ namespace CodeBase.Infrastructure.StateMachine
                     new BootstrapState(this, sceneLoader, services),
 
                 [typeof(LoadLevelState)] = 
-                    new LoadLevelState(this, sceneLoader, curtain, services.Single<IGameFactory>()),
+                    new LoadLevelState(
+                        this, 
+                        sceneLoader, 
+                        curtain, 
+                        services.Single<IGameFactory>(), 
+                        services.Single<ISpeedService>(), 
+                        services.Single<IEnemyService>(),
+                        services.Single<IBoosterService>()
+                        ),
                 
                 [typeof(GameLoopState)] = 
                     new GameLoopState()

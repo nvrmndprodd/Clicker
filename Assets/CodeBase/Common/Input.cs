@@ -1,21 +1,21 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Input : MonoBehaviour
+namespace CodeBase.Common
 {
-    void Update()
+    public class Input : MonoBehaviour
     {
-        RaycastHit hit = new RaycastHit();
-        for (int i = 0; i < UnityEngine.Input.touchCount; ++i)
+        void Update()
         {
-            if (UnityEngine.Input.GetTouch(i).phase.Equals(TouchPhase.Began))
+            RaycastHit hit = new RaycastHit();
+            for (int i = 0; i < UnityEngine.Input.touchCount; ++i)
             {
-                Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.GetTouch(i).position);
-                if (Physics.Raycast(ray, out hit))
+                if (UnityEngine.Input.GetTouch(i).phase.Equals(TouchPhase.Began))
                 {
-                    hit.transform.gameObject.SendMessage("OnMouseDown");
+                    Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.GetTouch(i).position);
+                    if (Physics.Raycast(ray, out hit))
+                    {
+                        hit.transform.gameObject.SendMessage("OnMouseDown");
+                    }
                 }
             }
         }

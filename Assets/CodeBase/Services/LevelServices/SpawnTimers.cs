@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace CodeBase.Services.SpawnService
+namespace CodeBase.Services.LevelServices
 {
     public class SpawnTimers
     {
@@ -102,12 +102,6 @@ namespace CodeBase.Services.SpawnService
 
         private void UpdateEnemySpawnTimer(float deltaTime)
         {
-            if (_freeze)
-            {
-                Debug.Log("Freeze");
-                return;
-            }
-            
             _enemySpawnCurrent += deltaTime;
             
             if (_enemySpawnCurrent < _enemySpawnTimer) return;

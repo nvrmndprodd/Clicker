@@ -1,42 +1,43 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class BoosterEffect : MonoBehaviour
+namespace CodeBase.Boosters
 {
-    public CanvasGroup Canvas;
+    public class BoosterEffect : MonoBehaviour
+    {
+        public CanvasGroup Canvas;
     
-    private float _timer = 0;
-    private bool _timerIsActive;
+        private float _timer = 0;
+        private bool _timerIsActive;
 
-    private void Update()
-    {
-        if (!_timerIsActive) return;
-        
-        _timer -= Time.deltaTime;
-        
-        if (_timer <= 0)
+        private void Update()
         {
-            StartCoroutine(FadeIn());
-            _timerIsActive = false;
+            if (!_timerIsActive) return;
+        
+            _timer -= Time.deltaTime;
+        
+            if (_timer <= 0)
+            {
+                StartCoroutine(FadeIn());
+                _timerIsActive = false;
+            }
         }
-    }
 
-    public void Activate(float time)
-    {
-        Canvas.alpha = 1f;
-        
-        _timerIsActive = true;
-        _timer = time;
-    }
-
-    private IEnumerator FadeIn()
-    {
-        while (Canvas.alpha > 0)
+        public void Activate(float time)
         {
-            Canvas.alpha -= 0.03f;
-            yield return new WaitForSeconds(0.03f);
+            Canvas.alpha = 1f;
+        
+            _timerIsActive = true;
+            _timer = time;
+        }
+
+        private IEnumerator FadeIn()
+        {
+            while (Canvas.alpha > 0)
+            {
+                Canvas.alpha -= 0.03f;
+                yield return new WaitForSeconds(0.03f);
+            }
         }
     }
 }

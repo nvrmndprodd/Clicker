@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using CodeBase.Boosters;
+﻿using CodeBase.Boosters;
 using CodeBase.Enemy;
 using CodeBase.Infrastructure.Fabric;
 using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace CodeBase.Services.SpawnService
+namespace CodeBase.Services.LevelServices
 {
     public class SpawnService : MonoBehaviour, IService
     {
@@ -32,30 +29,6 @@ namespace CodeBase.Services.SpawnService
             _timers.OnFreezeTimerUp += SpawnFreeze;
 
             _speedText = GameObject.FindWithTag("SpeedText").GetComponent<TextMeshProUGUI>();
-        }
-
-        private async void SpawnBomb()
-        {
-            var spawnPoint = FindFreePoint();
-            var bomb = await _factory.CreateBooster(BoosterType.Bomb, spawnPoint.transform.position);
-
-            spawnPoint.Unit = bomb;
-            spawnPoint.IsFree = false;
-
-            bomb.GetComponent<EnemyDeath>().Happened += OnEnemyDeath;
-        }
-
-        private async void SpawnFreeze()
-        {
-            var spawnPoint = FindFreePoint();
-            var freeze = await _factory.CreateBooster(BoosterType.Freeze, spawnPoint.transform.position);
-
-            spawnPoint.Unit = freeze;
-            spawnPoint.IsFree = false;
-
-            var death = freeze.GetComponent<EnemyDeath>();
-            death.Happened += Freeze;
-            death.Happened += OnEnemyDeath;
         }
 
         private void Start() => 
@@ -100,6 +73,30 @@ namespace CodeBase.Services.SpawnService
              spawnPoint.IsFree = false;
             
              enemy.GetComponent<EnemyDeath>().Happened += OnEnemyDeath;
+        }
+
+        private async void SpawnBomb()
+        {
+            var spawnPoint = FindFreePoint();
+            var bomb = await _factory.CreateBooster(BoosterType.Bomb, spawnPoint.transform.position);
+
+            spawnPoint.Unit = bomb;
+            spawnPoint.IsFree = false;
+
+            bomb.GetComponent<EnemyDeath>().Happened += OnEnemyDeath;
+        }
+
+        private async void SpawnFreeze()
+        {
+            var spawnPoint = FindFreePoint();
+            var freeze = await _factory.CreateBooster(BoosterType.Freeze, spawnPoint.transform.position);
+
+            spawnPoint.Unit = freeze;
+            spawnPoint.IsFree = false;
+
+            var death = freeze.GetComponent<EnemyDeath>();
+            death.Happened += Freeze;
+            death.Happened += OnEnemyDeath;
         }
 
         private void IncreaseSpeed(float speed)

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CodeBase.Services.SpawnService
+namespace CodeBase.Services.LevelServices
 {
     public class SpawnPoint : MonoBehaviour
     {

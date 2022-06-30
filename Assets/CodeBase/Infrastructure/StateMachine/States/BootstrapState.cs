@@ -1,9 +1,13 @@
 using CodeBase.Infrastructure.AssetManagement;
 using CodeBase.Infrastructure.Fabric;
 using CodeBase.Services;
+using CodeBase.Services.LevelServices.BoosterService;
+using CodeBase.Services.LevelServices.EnemyService;
+using CodeBase.Services.LevelServices.SpeedService;
+using CodeBase.Services.Progress;
 using CodeBase.Services.SceneManagement;
-using CodeBase.Services.SpawnService;
 using CodeBase.Services.StaticData;
+using CodeBase.Services.Update;
 using UnityEngine;
 
 namespace CodeBase.Infrastructure.StateMachine.States
@@ -49,6 +53,25 @@ namespace CodeBase.Infrastructure.StateMachine.States
                     _services.Single<IStaticDataService>(), 
                     _services.Single<IAssetProvider>())
                 );
+            
+            _services.RegisterSingle<IPersistentProgressService>(new PersistentProgressService());
+
+            var updateService = new GameObject("UpdateService").AddComponent<UpdateService>();
+            _services.RegisterSingle<IUpdateService>(updateService);
+
+            var speedService = new SpeedService(_services.Single<IPersistentProgressService>());
+            updateService.OnUpdate += speedService.OnUpdate;
+            _services.RegisterSingle<ISpeedService>(speedService);
+
+            var enemyService = new EnemyService(_services.Single<IPersistentProgressService>(),
+                _services.Single<IGameFactory>());
+            updateService.OnUpdate += enemyService.OnUpdate;
+            _services.RegisterSingle<IEnemyService>(enemyService);
+
+            var boosterService = new BoosterService(_services.Single<IGameFactory>(),
+                _services.Single<IPersistentProgressService>(), enemyService);
+            updateService.OnUpdate += boosterService.OnUpdate;
+            _services.RegisterSingle<IBoosterService>(boosterService);
         }
 
         private void RegisterStaticDataService()
