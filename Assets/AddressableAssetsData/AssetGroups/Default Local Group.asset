@@ -25,6 +25,10 @@ MonoBehaviour:
     m_Address: Enemies
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: b424167319ca29d45ad725bbc75ee6e9
+    m_Address: Boosters
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 7325ea1a4117f62478aac50fae82024f, type: 2}
   m_SchemaSet:

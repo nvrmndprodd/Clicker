@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CodeBase.Boosters;
 using CodeBase.Enemy;
 using CodeBase.Infrastructure.Fabric;
 using TMPro;
@@ -27,8 +28,34 @@ namespace CodeBase.Services.SpawnService
 
             _timers.OnEnemyTimerUp += SpawnEnemy;
             _timers.OnSpeedTimerUp += IncreaseSpeed;
+            _timers.OnBombTimerUp += SpawnBomb;
+            _timers.OnFreezeTimerUp += SpawnFreeze;
 
             _speedText = GameObject.FindWithTag("SpeedText").GetComponent<TextMeshProUGUI>();
+        }
+
+        private async void SpawnBomb()
+        {
+            var spawnPoint = FindFreePoint();
+            var bomb = await _factory.CreateBooster(BoosterType.Bomb, spawnPoint.transform.position);
+
+            spawnPoint.Unit = bomb;
+            spawnPoint.IsFree = false;
+
+            bomb.GetComponent<EnemyDeath>().Happened += OnEnemyDeath;
+        }
+
+        private async void SpawnFreeze()
+        {
+            var spawnPoint = FindFreePoint();
+            var freeze = await _factory.CreateBooster(BoosterType.Freeze, spawnPoint.transform.position);
+
+            spawnPoint.Unit = freeze;
+            spawnPoint.IsFree = false;
+
+            var death = freeze.GetComponent<EnemyDeath>();
+            death.Happened += Freeze;
+            death.Happened += OnEnemyDeath;
         }
 
         private void Start() => 
@@ -38,7 +65,7 @@ namespace CodeBase.Services.SpawnService
             _factory = factory;
 
         private void Update() => 
-            _timers.Update(Time.deltaTime * Speed);
+            _timers.Update(Time.deltaTime);
 
         private void CreateSpawnPoints()
         {
@@ -77,7 +104,6 @@ namespace CodeBase.Services.SpawnService
 
         private void IncreaseSpeed(float speed)
         {
-            print(speed);
             Speed = speed;
             _speedText.text = $"x{speed}";
         }
@@ -92,6 +118,9 @@ namespace CodeBase.Services.SpawnService
                 point.IsFree = true;
             }
         }
+
+        private void Freeze(GameObject obj) =>
+            StartCoroutine(_timers.FreezeFor(5f));
 
         private SpawnPoint FindFreePoint()
         {

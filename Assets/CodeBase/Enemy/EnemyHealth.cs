@@ -24,7 +24,7 @@ namespace CodeBase.Enemy
         public float Max
         {
             get => _max;
-            set => _max = value;
+            set => _max = value; 
         }
 
         public void TakeDamage(float damage)

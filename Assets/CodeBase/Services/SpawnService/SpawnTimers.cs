@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -49,6 +50,7 @@ namespace CodeBase.Services.SpawnService
         private int _speedTimer;
         private float _speedCurrent;
         private bool _speedIsMax = false;
+        private bool _freeze = false;
 
         #region EVENTS
 
@@ -70,7 +72,7 @@ namespace CodeBase.Services.SpawnService
 
         public void Update(float deltaTime)
         {
-            UpdateEnemySpawnTimer(deltaTime);
+            UpdateEnemySpawnTimer(deltaTime * _spawnService.Speed);
             UpdateFreezeSpawnTimer(deltaTime);
             UpdateBombSpawnTimer(deltaTime);
             UpdateDoubleTimer(deltaTime);
@@ -100,6 +102,12 @@ namespace CodeBase.Services.SpawnService
 
         private void UpdateEnemySpawnTimer(float deltaTime)
         {
+            if (_freeze)
+            {
+                Debug.Log("Freeze");
+                return;
+            }
+            
             _enemySpawnCurrent += deltaTime;
             
             if (_enemySpawnCurrent < _enemySpawnTimer) return;
@@ -140,9 +148,7 @@ namespace CodeBase.Services.SpawnService
         }
         private void UpdateSpeedTimer(float deltaTime)
         {
-            _speedCurrent += deltaTime / _spawnService.Speed;
-            
-            Debug.Log(_speedCurrent);
+            _speedCurrent += deltaTime;
 
             if (_speedCurrent < _speedTimer) return;
             
@@ -158,6 +164,15 @@ namespace CodeBase.Services.SpawnService
             _speedTimer = timers[SpeedTimerIndex + 1];
             SpeedTimerIndex++;
             _speedCurrent = 0f;
+        }
+
+        public IEnumerator FreezeFor(float time)
+        {
+            _freeze = true;
+
+            yield return new WaitForSeconds(time);
+
+            _freeze = false;
         }
     }
 }

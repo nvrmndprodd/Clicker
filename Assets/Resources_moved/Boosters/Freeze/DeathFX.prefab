@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 199600948077274898}
   - component: {fileID: 114826195859974090}
   m_Layer: 0
-  m_Name: CFX4 Sparks Explosion B
+  m_Name: DeathFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

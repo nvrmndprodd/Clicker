@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using CodeBase.Boosters;
 using CodeBase.Enemy;
 using CodeBase.Infrastructure.AssetManagement;
 using CodeBase.Services.StaticData;
@@ -31,9 +32,13 @@ namespace CodeBase.Infrastructure.Fabric
             return enemyObject;
         }
 
-        public GameObject CreateBooster()
+        public async Task<GameObject> CreateBooster(BoosterType boosterType, Vector3 at)
         {
-            return new GameObject();
+            var boosterData = _staticData.ForBooster(boosterType);
+
+            var boosterPrefab = await _assets.Load<GameObject>(boosterData.prefab);
+
+            return Object.Instantiate(boosterPrefab, at, Quaternion.identity);
         }
     }
 }
