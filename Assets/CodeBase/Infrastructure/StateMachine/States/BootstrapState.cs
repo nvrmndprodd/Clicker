@@ -1,3 +1,4 @@
+using CodeBase.Common;
 using CodeBase.Infrastructure.AssetManagement;
 using CodeBase.Infrastructure.Fabric;
 using CodeBase.Services;
@@ -9,6 +10,7 @@ using CodeBase.Services.SceneManagement;
 using CodeBase.Services.StaticData;
 using CodeBase.Services.Update;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CodeBase.Infrastructure.StateMachine.States
 {
@@ -19,27 +21,35 @@ namespace CodeBase.Infrastructure.StateMachine.States
         private readonly IGameStateMachine _stateMachine;
         private readonly ISceneLoader _sceneLoader;
         private readonly AllServices _services;
+        private readonly LoadingCurtain _curtain;
 
-        public BootstrapState(IGameStateMachine gameStateMachine, ISceneLoader sceneLoader, AllServices services)
+        public BootstrapState(IGameStateMachine gameStateMachine, ISceneLoader sceneLoader, AllServices services,
+            LoadingCurtain curtain)
         {
             _stateMachine = gameStateMachine;
             _sceneLoader = sceneLoader;
             _services = services;
-            
+            _curtain = curtain;
+
             RegisterServices();
         }
 
         public void Enter()
         {
-            _sceneLoader.Load("Main", onLoaded: EnterLoadLevel);
+            _curtain.Show();
+            _sceneLoader.Load("Initial", onLoaded: EnterLoadLevel);
         }
 
         public void Exit()
         {
         }
 
-        private void EnterLoadLevel() => 
-            _stateMachine.Enter<LoadLevelState, string>("Main");
+        private void EnterLoadLevel()
+        {
+            _curtain.Hide();
+            GameObject.FindWithTag("StartButton").GetComponent<Button>().onClick
+                .AddListener(() => _stateMachine.Enter<LoadLevelState, string>("Main"));
+        }
 
         private void RegisterServices()
         {
@@ -59,19 +69,9 @@ namespace CodeBase.Infrastructure.StateMachine.States
             var updateService = new GameObject("UpdateService").AddComponent<UpdateService>();
             _services.RegisterSingle<IUpdateService>(updateService);
 
-            var speedService = new SpeedService(_services.Single<IPersistentProgressService>());
-            updateService.OnUpdate += speedService.OnUpdate;
-            _services.RegisterSingle<ISpeedService>(speedService);
-
-            var enemyService = new EnemyService(_services.Single<IPersistentProgressService>(),
-                _services.Single<IGameFactory>());
-            updateService.OnUpdate += enemyService.OnUpdate;
-            _services.RegisterSingle<IEnemyService>(enemyService);
-
-            var boosterService = new BoosterService(_services.Single<IGameFactory>(),
-                _services.Single<IPersistentProgressService>(), enemyService);
-            updateService.OnUpdate += boosterService.OnUpdate;
-            _services.RegisterSingle<IBoosterService>(boosterService);
+            var inputService = new GameObject("InputService").AddComponent<InputService>();
+            inputService.Construct(_services.Single<IPersistentProgressService>());
+            _services.RegisterSingle(inputService);
         }
 
         private void RegisterStaticDataService()

@@ -17,8 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: b974750a7f8178a47831c239d8558009
   m_SerializeEntries:
-  - m_GUID: 9fc0d4010bbf28b4594072e72b8655ab
-    m_Address: Assets/Scenes/Main.unity
+  - m_GUID: c97dfcc599739d844abc349f506fdc0f
+    m_Address: Assets/Scenes/Initial.unity
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 310c1855addf64243a30156dbb4b9772
@@ -27,6 +27,22 @@ MonoBehaviour:
     m_SerializedLabels: []
   - m_GUID: b424167319ca29d45ad725bbc75ee6e9
     m_Address: Boosters
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 9fc0d4010bbf28b4594072e72b8655ab
+    m_Address: Assets/Scenes/Main.unity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: e99be4ce1386ad24ba4daea933dc9abe
+    m_Address: PlayerLost
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 57ec55630abd15e46b434622056bbb6a
+    m_Address: Assets/JMO Assets
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 0a821d5fd4b5bf74189ed63e7cbcbc9a
+    m_Address: Assets/GUI PRO Kit - Casual Game
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

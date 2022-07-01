@@ -33,6 +33,7 @@ namespace CodeBase.Enemy
 
             StartCoroutine(DestroyTimer());
             
+            Debug.Log(gameObject == null);
             Happened?.Invoke(gameObject);
         }
 

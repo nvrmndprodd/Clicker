@@ -12,13 +12,17 @@ namespace CodeBase.Services.LevelServices.EnemyService
         
         private readonly IPersistentProgressService _progressService;
         private readonly IGameFactory _factory;
+        private readonly PlayerLostPopup _playerLostPopup;
+
         private RandomTimer _timer;
         private SpawnPoint[,] _spawnPoints = new SpawnPoint[8, 8];
+        private int _enemiesCounter = 0;
 
-        public EnemyService(IPersistentProgressService progressService, IGameFactory gameFactory)
+        public EnemyService(IPersistentProgressService progressService, IGameFactory gameFactory, PlayerLostPopup playerLostPopup)
         {
             _progressService = progressService;
             _factory = gameFactory;
+            _playerLostPopup = playerLostPopup;
 
             _timer = new RandomTimer(2, 7);
             _timer.OnTimerUp += SpawnEnemy;
@@ -30,11 +34,9 @@ namespace CodeBase.Services.LevelServices.EnemyService
         {
             if (_progressService.Progress.LevelProgress.Freezed)
             {
-                Debug.Log("Freezed");
                 return;
             }
             _timer.UpdateTimer(deltaTime * _progressService.Progress.LevelProgress.Speed);
-            Debug.Log(_timer.Time);
         }
 
         public SpawnPoint FindFreePoint()
@@ -51,6 +53,8 @@ namespace CodeBase.Services.LevelServices.EnemyService
 
         public void OnEnemyDeath(GameObject enemy)
         {
+            --_enemiesCounter;
+            
             foreach (var point in _spawnPoints)
             {
                 if (point.Unit != enemy) return;
@@ -68,10 +72,7 @@ namespace CodeBase.Services.LevelServices.EnemyService
 
             _spawnPoints = new SpawnPoint[8, 8];
             _timer.OnTimerUp -= SpawnEnemy;
-            _timer = new RandomTimer(2, 7);
-            _timer.OnTimerUp += SpawnEnemy;
-            
-            CreateSpawnPoints();
+            _timer = null;
         }
 
         private void CreateSpawnPoints()
@@ -98,14 +99,21 @@ namespace CodeBase.Services.LevelServices.EnemyService
 
         private async void SpawnEnemy()
         {
+            ++_enemiesCounter;
+            
             var enemyType = (EnemyType) Random.Range(0, 3);
             
             var spawnPoint = FindFreePoint();
+            if (spawnPoint is null) return;
+            
             var enemy = await _factory
                 .CreateEnemy(enemyType, spawnPoint.transform.position, _progressService.Progress.LevelProgress.Speed);
             
             spawnPoint.Unit = enemy;
             spawnPoint.IsFree = false;
+            
+            if (_enemiesCounter >= 10)
+                _playerLostPopup.Show();
             
             enemy.GetComponent<EnemyDeath>().Happened += OnEnemyDeath;
         }

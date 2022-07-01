@@ -734,6 +734,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Animator: {fileID: 4412062546276980412}
+  HitFX: {fileID: 1049206630943753027, guid: 6e8c1537d4a54ae4e9113bfcc8fb1cc8, type: 3}
   _current: 2
   _max: 2
 --- !u!54 &6916040220312799858

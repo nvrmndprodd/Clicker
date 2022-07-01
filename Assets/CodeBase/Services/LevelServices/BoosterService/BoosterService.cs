@@ -19,6 +19,7 @@ namespace CodeBase.Services.LevelServices.BoosterService
         private RandomTimer _freezeTimer;
         private RandomTimer _doubleTimer;
         private RandomTimer _freezeActiveTimer;
+        private RandomTimer _doubleDamageActiveTimer;
 
         public BoosterService(IGameFactory factory, IPersistentProgressService progressService, IEnemyService enemyService)
         {
@@ -34,13 +35,28 @@ namespace CodeBase.Services.LevelServices.BoosterService
             _bombTimer.UpdateTimer(deltaTime);
             _freezeTimer.UpdateTimer(deltaTime);
             _doubleTimer.UpdateTimer(deltaTime);
-            
-            if (_freezeActiveTimer != null) 
-                _freezeActiveTimer.UpdateTimer(deltaTime);
+
+            _freezeActiveTimer?.UpdateTimer(deltaTime);
+            _doubleDamageActiveTimer?.UpdateTimer(deltaTime);
         }
 
-        public void Clear() => 
-            CreateTimers();
+        public void Clear()
+        {
+            if (_bombTimer != null) _bombTimer.OnTimerUp -= OnBombTimerUp;
+            _bombTimer = null;
+            
+            if (_freezeTimer != null) _freezeTimer.OnTimerUp -= OnFreezeTimerUp;
+            _freezeTimer = null;
+            
+            if (_doubleTimer != null) _doubleTimer.OnTimerUp -= OnDoubleTimerUp;
+            _doubleTimer = null;
+
+            if (_freezeActiveTimer != null) _freezeActiveTimer.OnTimerUp -= Unfreeze;
+            _freezeActiveTimer = null;
+            
+            if (_doubleDamageActiveTimer != null) _doubleDamageActiveTimer.OnTimerUp -= DisableDoubleDamage;
+            _doubleDamageActiveTimer = null;
+        }
 
         private void CreateTimers()
         {
@@ -79,8 +95,23 @@ namespace CodeBase.Services.LevelServices.BoosterService
             _freezeActiveTimer = null;
         }
 
-        private void OnDoubleTimerUp()
+        private async void OnDoubleTimerUp()
         {
+            var booster = await CreateBooster(BoosterType.DoubleDamage);
+            booster.GetComponent<EnemyDeath>().Happened += DoubleDamage;
+        }
+
+        private void DoubleDamage(GameObject obj)
+        {
+            _doubleDamageActiveTimer = new RandomTimer(5, 6);
+            _doubleDamageActiveTimer.OnTimerUp += DisableDoubleDamage;
+            _progressService.Progress.PlayerStats.Damage = 2;
+        }
+
+        private void DisableDoubleDamage()
+        {
+            _progressService.Progress.PlayerStats.Damage = 1;
+            _doubleDamageActiveTimer = null;
         }
 
         private async Task<GameObject> CreateBooster(BoosterType type)

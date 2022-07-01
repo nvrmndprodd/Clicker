@@ -18,15 +18,15 @@ namespace CodeBase.Services.SceneManagement
     
         private IEnumerator LoadScene(string nextScene, Action onLoaded = null)
         {
-            if (SceneManager.GetActiveScene().name == nextScene)
+            if (SceneManager.GetActiveScene().name == nextScene && nextScene != "Main")
             {
                 onLoaded?.Invoke();
                 yield break;
             }
       
-            var waitNextScene = Addressables.LoadSceneAsync(nextScene);
+            var waitNextScene = SceneManager.LoadSceneAsync(nextScene);
 
-            while (!waitNextScene.IsDone)
+            while (!waitNextScene.isDone)
                 yield return null;
       
             onLoaded?.Invoke();

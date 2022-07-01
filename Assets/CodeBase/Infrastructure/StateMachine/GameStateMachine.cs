@@ -8,7 +8,9 @@ using CodeBase.Services;
 using CodeBase.Services.LevelServices.BoosterService;
 using CodeBase.Services.LevelServices.EnemyService;
 using CodeBase.Services.LevelServices.SpeedService;
+using CodeBase.Services.Progress;
 using CodeBase.Services.SceneManagement;
+using CodeBase.Services.Update;
 
 namespace CodeBase.Infrastructure.StateMachine
 {
@@ -17,12 +19,12 @@ namespace CodeBase.Infrastructure.StateMachine
         private readonly Dictionary<Type, IExitableState> _states;
         private IExitableState _activeState;
 
-        public GameStateMachine(SceneLoader sceneLoader, LoadingCurtain curtain, AllServices services)
+        public GameStateMachine(ISceneLoader sceneLoader, LoadingCurtain curtain, AllServices services)
         {
             _states = new Dictionary<Type, IExitableState>()
             {
                 [typeof(BootstrapState)] =
-                    new BootstrapState(this, sceneLoader, services),
+                    new BootstrapState(this, sceneLoader, services, curtain),
 
                 [typeof(LoadLevelState)] = 
                     new LoadLevelState(
@@ -30,9 +32,8 @@ namespace CodeBase.Infrastructure.StateMachine
                         sceneLoader, 
                         curtain, 
                         services.Single<IGameFactory>(), 
-                        services.Single<ISpeedService>(), 
-                        services.Single<IEnemyService>(),
-                        services.Single<IBoosterService>()
+                        services.Single<IPersistentProgressService>(),
+                        services.Single<IUpdateService>()
                         ),
                 
                 [typeof(GameLoopState)] = 

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using CodeBase.Boosters;
+using CodeBase.Common;
 using CodeBase.Enemy;
 using CodeBase.Infrastructure.AssetManagement;
 using CodeBase.Services.StaticData;
@@ -39,6 +40,12 @@ namespace CodeBase.Infrastructure.Fabric
             var boosterPrefab = await _assets.Load<GameObject>(boosterData.prefab);
 
             return Object.Instantiate(boosterPrefab, at, Quaternion.identity);
+        }
+
+        public async Task<PlayerLostPopup> CreatePlayerLostPopup()
+        {
+            var prefab = await _assets.Load<GameObject>("PlayerLost");
+            return Object.Instantiate(prefab).GetComponent<PlayerLostPopup>();
         }
     }
 }

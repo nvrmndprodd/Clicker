@@ -8,6 +8,9 @@ TagManager:
   - StartPoint
   - SpeedText
   - Ice
+  - DoubleDamage
+  - StartButton
+  - PlayerLost
   layers:
   - Default
   - TransparentFX

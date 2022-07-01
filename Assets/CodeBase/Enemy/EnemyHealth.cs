@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using CodeBase.Services.Progress;
 using UnityEngine;
 
 namespace CodeBase.Enemy
@@ -6,6 +8,7 @@ namespace CodeBase.Enemy
     public class EnemyHealth : MonoBehaviour
     {
         public EnemyAnimator Animator;
+        public GameObject HitFX;
 
         [SerializeField]
         private float _current;
@@ -13,6 +16,7 @@ namespace CodeBase.Enemy
         [SerializeField]
         private float _max;
 
+        private Stats _playerStats;
         public event Action HealthChanged;
 
         public float Current
@@ -27,18 +31,28 @@ namespace CodeBase.Enemy
             set => _max = value; 
         }
 
+        public void Construct(Stats playerStats) => 
+            _playerStats = playerStats;
+
         public void TakeDamage(float damage)
         {
             Current -= damage;
 
             Animator.PlayHit();
+
+            StartCoroutine(SpawnHitFX());
       
             HealthChanged?.Invoke();
         }
 
-        private void OnMouseDown()
+        private IEnumerator SpawnHitFX()
         {
-            TakeDamage(1);
+            var fx = Instantiate(HitFX, transform.position, Quaternion.identity);
+            yield return new WaitForSeconds(0.5f);
+            Destroy(fx);
         }
+
+        //private void OnMouseDown() => 
+        //    TakeDamage(_playerStats.Damage);
     }
 }
